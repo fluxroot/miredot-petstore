@@ -49,7 +49,7 @@ public interface MireDotTitleStrategyTestService {
      *
      * @return A number
      * @title The title from the @title tag
-     * @summary The title from the @summary tag.
+     *
      */
     @Path("summarytag")
     @GET
