@@ -1,11 +1,13 @@
 buildscript {
     repositories {
         mavenCentral()
+        gradlePluginPortal()
         maven { url "http://nexus.qmino.com/content/repositories/miredot/" }
         maven { url "http://nexus.qmino.com/content/repositories/miredot-snapshots" }
     }
     dependencies {
         classpath "com.qmino:miredot-plugin:${miredotVersion}"
+        classpath 'com.palantir.gradle.revapi:gradle-revapi:1.4.4'
     }
 }
 
@@ -18,11 +20,14 @@ repositories {
     mavenCentral()
     maven { url "http://nexus.qmino.com/content/repositories/miredot/" }
     maven { url "http://nexus.qmino.com/content/repositories/miredot-snapshots" }
+    mavenLocal()
 }
 
 apply plugin: 'java'
 apply plugin: 'maven'
+apply plugin: 'maven-publish'
 apply plugin: 'miredot'
+apply plugin: 'com.palantir.revapi'
 
 dependencies {
     compile 'org.jboss.resteasy:resteasy-jaxrs:3.11.3.Final'
@@ -33,6 +38,20 @@ dependencies {
 
 sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+revapi {
+    oldGroup.set(group)
+    oldName.set(name)
+    oldVersions.add(version)
+}
 
 miredot {
     source = sourceSets.main.allJava
